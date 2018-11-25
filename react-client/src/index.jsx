@@ -11,51 +11,59 @@ class App extends React.Component {
       value: ''
     }
 
-    this.handleChange = this.handleChange.bind(this);
+    
     this.handleSubmit = this.handleSubmit.bind(this);
+    
   }
 
   handleChange (e) {
-    this.setState({value: e.target.value})
+    this.setState({value: e.target.value});
+    // console.log(e);
   };
 
-  handleSubmit (event) {
-    console.log('Your Culinary Experience is' + this.state.value);
-      // default function than when triggered it will not execute the method
-      event.preventDefault();
-
+  handleSubmit (any) {
+    $.ajax({
+      type: "POST",
+      url: '/cuisine', 
+      data: {value: any},
+      body: JSON.stringify(data),
+      success: () => {
+        console.log('delicious!')
+      },
+      error: (err) => {
+        console.log('err', err);
+      }
+    });
   };
 
-  // componentDidMount() {
-  //   $.ajax({
-  //     url: '/items', 
-  //     success: (data) => {
-  //       this.setState({
-  //         items: data
-  //       })
-  //     },
-  //     error: (err) => {
-  //       console.log('err', err);
-  //     }
-  //   });
-  // }
+  sendSubmit(e) {
+    console.log('handlesubmit with value: ', this.state.value )
+  }
 
   render () {
     return (
       <div className="App">
         <header className="App-header">
-          <img src= "https://i.imgur.com/NzCGuaK.png" className="App-logo" alt="logo" />
+          <img src= "https://i.imgur.com/NzCGuaK.png" className="App-logo" alt="logo"/>
           <p>Deliver Our Services, Our Chefs to your house for any ocassions or even simple gathering!</p>
-          <form onSubmit={this.handleSubmit}>
-            <label>
-              <input type ="text" value ={this.state.value} onChange ={this.handleChange}/>
-                </label>
-              <input type="submit" value="Your Cuisine"/>
-          </form>
-        </header>
-    </div>
+          <div className='search-area'>
+            <div className='codehim-ss-bar'>
+              <div className="search-bar form-inline">
+                <input className="form-control" type="text" value={this.state.value}
+                      onChange={this.handleChange.bind(this)} onSearch = {this.handleSubmit.bind(this)}
+                />
+                <button type="submit" onClick = {this.sendSubmit.bind(this)} className="codehim-circle-search-button" placeholder="Type Yummy Dish!">
+                </button>
+              </div>
+            </div>
+          </div>
+        </header> 
+      </div>
     )
   }
 }
+
+
+
 
 ReactDOM.render(<App />, document.getElementById('app'));

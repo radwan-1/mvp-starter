@@ -1,31 +1,46 @@
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/test');
+mongoose.Promise = global.Promise
+//mongoose.connect('mongodb://localhost/test');
+let dbUrl = 'mongodb://radwan-1:maryjoy29@ds263740.mlab.com:63740/user';
 
-var db = mongoose.connection;
+mongoose.connect('mongodb://radwan-1:R123456@ds263740.mlab.com:63740/user');
 
-db.on('error', function() {
-  console.log('mongoose connection error');
+var dotenv = require('dotenv');
+var db = mongoose.connection
+
+//(process.env.MONGODB);
+
+// let dbUrl = 'mongodb://radwan-1:maryjoy29@ds263740.mlab.com:63740/user';
+
+db.on('error', function(error) {
+  console.log('mongoose connection error', error);
 });
 
-db.once('open', function() {
-  console.log('mongoose connected successfully');
-});
+// mongoose.connect(dbUrl);
 
-var itemSchema = mongoose.Schema({
-  username: String,
-  description: String
+
+var itemSchema =  mongoose.Schema({
+  count: Number,
+  recipe: String
 });
 
 var Item = mongoose.model('Item', itemSchema);
 
-var selectAll = function(callback) {
-  Item.find({}, function(err, items) {
-    if(err) {
-      callback(err, null);
-    } else {
-      callback(null, items);
-    }
-  });
-};
+let save = function (result){
+  console.log("RADWAN DON'T FALTER:", result)
+  let newItem = new Item({
+    count: result.count,
+    recipe: result.recipes[0].title
+    // Recipe_page: result.recipes[0].f2f_url
+  })
 
-module.exports.selectAll = selectAll;
+  newItem.save(function(err, newItem){
+    if(err){
+      throw err;
+    }
+      console.log('saved!', newItem);
+  })
+
+}
+
+module.exports.save = save;
